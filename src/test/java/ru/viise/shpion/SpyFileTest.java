@@ -30,7 +30,6 @@ public class SpyFileTest {
                                 case DELETE:
                                     if (!eventContext.path().toUri().toString().endsWith("~")) {
                                         System.out.println("DELETE: " + eventContext.path().toUri());
-                                        eventContext.self().stop();
                                         break;
                                     }
                             }
