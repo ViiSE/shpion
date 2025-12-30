@@ -26,7 +26,7 @@ public class SpyDir implements Spy {
             path.register(watchService, watchEventKind);
 
             while (!stopped.get()) {
-                WatchKey key = watchService.poll(100, TimeUnit.MILLISECONDS);
+                WatchKey key = watchService.poll(options.pollDur().toMillis(), TimeUnit.MILLISECONDS);
                 if (key == null) {
                     continue;
                 }
