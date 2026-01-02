@@ -5,14 +5,14 @@ import java.nio.file.WatchEvent;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
-public enum FsKind {
+public enum FsEvent {
     CREATE,
     DELETE,
     MODIFY,
     OVERFLOW;
 
-    static WatchEvent.Kind<?> toWatchEventKind(FsKind kind) {
-        return switch (kind) {
+    static WatchEvent.Kind<?> toWatchEventKind(FsEvent event) {
+        return switch (event) {
             case CREATE -> ENTRY_CREATE;
             case DELETE -> ENTRY_DELETE;
             case MODIFY -> ENTRY_MODIFY;
@@ -20,7 +20,7 @@ public enum FsKind {
         };
     }
 
-    static FsKind toKind(WatchEvent.Kind<?> watchEventKind) {
+    static FsEvent toFsEvent(WatchEvent.Kind<?> watchEventKind) {
         if (watchEventKind == ENTRY_CREATE) {
             return CREATE;
         }
