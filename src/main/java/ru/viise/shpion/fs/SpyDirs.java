@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SpyDirs implements Spy {
 
     private final AtomicBoolean stopped = new AtomicBoolean(false);
+    private final AtomicInteger deleteCounter = new AtomicInteger(0);
 
     private final SpyOptionsFs options;
     private final SpyWatcherFs watcher;
@@ -37,9 +39,9 @@ public class SpyDirs implements Spy {
 
         try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
             WatchEvent.Kind<?>[] watchEventKind = options.toWatchEventKind();
-            for (SpyTarget<Path, FsEventContext> target : spyTargets) {
-                WatchKey key = target.target().register(watchService, watchEventKind);
-                keyToPathMap.put(key, target.target());
+            for (SpyTarget<Path, FsEventContext> spyTarget : spyTargets) {
+                WatchKey key = spyTarget.target().register(watchService, watchEventKind);
+                keyToPathMap.put(key, spyTarget.target());
             }
 
             if (options.optionsGeneral().needPool()) {
@@ -83,7 +85,10 @@ public class SpyDirs implements Spy {
 
             boolean valid = key.reset();
             if (!valid) {
-                stopped.set(true);
+                deleteCounter.incrementAndGet();
+                if (deleteCounter.get() == watcher.targets().size()) {
+                    stopped.set(true);
+                }
             }
         }
     }
