@@ -3,6 +3,8 @@ package ru.viise.shpion;
 import org.junit.jupiter.api.Test;
 import ru.viise.shpion.fs.FsEvent;
 import ru.viise.shpion.fs.SpyFiles;
+import ru.viise.shpion.fs.SpyOptionsFs;
+import ru.viise.shpion.fs.SpyWatcherFs;
 
 import java.time.Duration;
 
@@ -10,10 +12,10 @@ public class SpyFilesTest {
 
     @Test
     public void watch() {
-        Spy spyFiles = SpyFiles.create(
-                SpyOptions.fs(FsEvent.CREATE, FsEvent.DELETE, FsEvent.MODIFY)
+        Spy<Void> spyFiles = SpyFiles.create(
+                new SpyOptionsFs(FsEvent.CREATE, FsEvent.DELETE, FsEvent.MODIFY)
                         .needPool(Duration.ofMillis(100L)),
-                SpyWatcher.fs()
+                new SpyWatcherFs()
                         .from(
                                 "anotherDirs\\Hello2.txt",
                                 fsEventContext ->

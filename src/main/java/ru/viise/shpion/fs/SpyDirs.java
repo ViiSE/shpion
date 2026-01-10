@@ -1,6 +1,6 @@
 package ru.viise.shpion.fs;
 
-import ru.viise.shpion.Spy;
+import ru.viise.shpion.SpyPoolable;
 import ru.viise.shpion.SpyTarget;
 import ru.viise.shpion.utils.SpyTargetUtils;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SpyDirs implements Spy {
+public class SpyDirs implements SpyPoolable {
 
     private final AtomicBoolean stopped = new AtomicBoolean(false);
     private final AtomicInteger deleteCounter = new AtomicInteger(0);
@@ -31,7 +31,7 @@ public class SpyDirs implements Spy {
     }
 
     @Override
-    public void watch() {
+    public Void watch() {
         List<SpyTarget<Path, FsEventContext>> spyTargets = watcher.targets();
         preparation(spyTargets);
 
@@ -52,6 +52,7 @@ public class SpyDirs implements Spy {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return null;
     }
 
     private void preparation(List<SpyTarget<Path, FsEventContext>> spyTargets) {

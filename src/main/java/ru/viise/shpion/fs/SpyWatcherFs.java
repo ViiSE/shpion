@@ -12,12 +12,7 @@ public final class SpyWatcherFs {
 
     private final List<SpyTarget<Path, FsEventContext>> targets = new ArrayList<>();
 
-    SpyWatcherFs() {
-    }
-
-    public static SpyWatcherFs create() {
-        return new SpyWatcherFs();
-    }
+    public SpyWatcherFs() {}
 
     public SpyWatcherFs from(
             String path,

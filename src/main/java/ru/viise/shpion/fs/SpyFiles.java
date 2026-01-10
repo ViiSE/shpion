@@ -1,8 +1,8 @@
 package ru.viise.shpion.fs;
 
 import ru.viise.shpion.Spy;
+import ru.viise.shpion.SpyPoolable;
 import ru.viise.shpion.SpyTarget;
-import ru.viise.shpion.SpyWatcher;
 import ru.viise.shpion.utils.Pair;
 import ru.viise.shpion.utils.SpyTargetUtils;
 
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class SpyFiles implements Spy {
+public class SpyFiles implements SpyPoolable {
 
     private final SpyOptionsFs options;
     private final SpyWatcherFs watcher;
 
-    private final Spy spyDirs;
+    private final Spy<Void> spyDirs;
 
     SpyFiles(SpyOptionsFs options, SpyWatcherFs watcher) {
         this.options = options;
@@ -30,8 +30,8 @@ public class SpyFiles implements Spy {
         return new SpyFiles(options, watcher);
     }
 
-    private Spy createSpyDirs() {
-        SpyWatcherFs spyWatcherFsDirs = SpyWatcher.fs();
+    private Spy<Void> createSpyDirs() {
+        SpyWatcherFs spyWatcherFsDirs = new SpyWatcherFs();
         /*
         Алгоритм следующий:
         1. Делаем Map, где ключ - parentDir файлов, значение - все SpyTarget файлов, которые содержатся в папке parentDir
@@ -72,8 +72,9 @@ public class SpyFiles implements Spy {
     }
 
     @Override
-    public void watch() {
+    public Void watch() {
         spyDirs.watch();
+        return null;
     }
 
     @Override

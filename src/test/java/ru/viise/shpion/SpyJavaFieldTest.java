@@ -1,34 +1,37 @@
 package ru.viise.shpion;
 
-import ru.viise.shpion.java.JvHandler;
-import ru.viise.shpion.java.JvOptions;
-import ru.viise.shpion.java.JvSubTarget;
-import ru.viise.shpion.java.SpyJavaField;
+import ru.viise.shpion.java.SpyJvFields;
+import ru.viise.shpion.java.SpyOptionsJv;
+import ru.viise.shpion.java.SpyWatcherJvFields;
 
-import java.util.List;
+import java.time.Duration;
 
 public class SpyJavaFieldTest {
 
-    static void main() throws NoSuchFieldException, IllegalAccessException, InterruptedException {
+    static void main() throws InterruptedException {
         User user = new User();
         user.age = 1L;
 
-        Spy spy = new SpyJavaField(JvOptions.of(
-                user,
-                List.of(
-                        JvSubTarget.field("name"),
-                        JvSubTarget.field("age")
-                ),
-                List.of(JvHandler.forField(
-                        jvEventContext -> IO.println(
-                                "CHANGE: field=" + jvEventContext.subTarget().name()
-                                        + ", oldValue=" + jvEventContext.fieldTargetContext().oldValue()
-                                        + ", newValue=" + jvEventContext.fieldTargetContext().newValue()
+        Spy<Void> spy = new SpyJvFields(
+                new SpyOptionsJv().needPool(Duration.ofMillis(100L)),
+                new SpyWatcherJvFields(user)
+                        .from(
+                                "name",
+                                jvFieldEventContext -> IO.println(
+                                        "CHANGE: field=" + jvFieldEventContext.fieldName()
+                                                + ", oldValue=" + jvFieldEventContext.oldValue()
+                                                + ", newValue=" + jvFieldEventContext.newValue()
+                                )
                         )
-                ))),
-                true
+                        .from(
+                                "age",
+                                jvFieldEventContext -> IO.println(
+                                        "CHANGE: field=" + jvFieldEventContext.fieldName()
+                                                + ", oldValue=" + jvFieldEventContext.oldValue()
+                                                + ", newValue=" + jvFieldEventContext.newValue()
+                                )
+                        )
         );
-
 
         Thread thread = new Thread(spy::watch);
         thread.start();

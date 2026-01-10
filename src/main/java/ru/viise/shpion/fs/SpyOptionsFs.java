@@ -18,16 +18,16 @@ public final class SpyOptionsFs {
         this.optionsGeneral = optionsGeneral;
     }
 
-    public static SpyOptionsFs of(FsEvent event) {
-        return of(List.of(event));
+    public SpyOptionsFs(FsEvent event) {
+        this(List.of(event));
     }
 
-    public static SpyOptionsFs of(FsEvent... events) {
-        return of(Arrays.asList(events));
+    public SpyOptionsFs(FsEvent... events) {
+        this(Arrays.asList(events));
     }
 
-    public static SpyOptionsFs of(List<FsEvent> events) {
-        return new SpyOptionsFs(events, new SpyOptionsGeneral());
+    public SpyOptionsFs(List<FsEvent> events) {
+        this(events, new SpyOptionsGeneral());
     }
 
     public SpyOptionsFs needPool(Duration polDur) {
@@ -38,10 +38,6 @@ public final class SpyOptionsFs {
     public SpyOptionsFs needCreateIfNotExists() {
         createIfNotExists = true;
         return this;
-    }
-
-    List<FsEvent> events() {
-        return events;
     }
 
     SpyOptionsGeneral optionsGeneral() {

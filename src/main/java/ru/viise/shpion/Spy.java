@@ -1,5 +1,5 @@
 package ru.viise.shpion;
 
-public interface Spy extends SpySelf {
-    void watch();
+public interface Spy<SPY_OBJ> extends SpySelf {
+    SPY_OBJ watch();
 }

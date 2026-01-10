@@ -3,6 +3,8 @@ package ru.viise.shpion;
 import org.junit.jupiter.api.Test;
 import ru.viise.shpion.fs.FsEvent;
 import ru.viise.shpion.fs.SpyDirs;
+import ru.viise.shpion.fs.SpyOptionsFs;
+import ru.viise.shpion.fs.SpyWatcherFs;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,11 +16,11 @@ public class SpyDirsTest {
         AtomicInteger dirCounter = new AtomicInteger(0);
         AtomicInteger anotherDirCounter = new AtomicInteger(0);
 
-        Spy spyDirs = SpyDirs.create(
-                SpyOptions.fs(FsEvent.CREATE, FsEvent.DELETE, FsEvent.MODIFY)
+        Spy<Void> spyDirs = SpyDirs.create(
+                new SpyOptionsFs(FsEvent.CREATE, FsEvent.DELETE, FsEvent.MODIFY)
                         .needCreateIfNotExists()
                         .needPool(Duration.ofMillis(100L)),
-                SpyWatcher.fs()
+                new SpyWatcherFs()
                         .from(
                                 "dirs",
                                 fsEventContext ->
